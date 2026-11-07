@@ -1,0 +1,13 @@
+.nav-link.active {
+  border-bottom: 2px solid #18181b;
+  color: #18181b;
+}
+
+.tab-content {
+  animation: fadeIn 0.12s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

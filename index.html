@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grind & Crumb — Operations Command</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-zinc-50 text-zinc-900 font-sans antialiased selection:bg-zinc-900 selection:text-white min-h-screen flex flex-col">
+
+  <!-- Sleek Top Navigation Bar -->
+  <header class="bg-white border-b border-zinc-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+      <!-- Left: Brand + Module Tabs -->
+      <div class="flex items-center gap-8">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-md bg-zinc-900 flex items-center justify-center text-white">
+            <i data-lucide="coffee" class="w-4 h-4"></i>
+          </div>
+          <span class="font-semibold text-sm tracking-tight text-zinc-900">Grind & Crumb</span>
+          <span class="text-[11px] font-mono text-zinc-400 border border-zinc-200 rounded px-1.5 py-0.5">OPS</span>
+        </div>
+
+        <!-- Clean Pill Tabs -->
+        <nav class="hidden md:flex items-center gap-1">
+          <button onclick="switchTab('module1')" id="nav-module1" class="nav-tab active px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5">
+            <span>1. Executive P&L</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          </button>
+          <button onclick="switchTab('module2')" id="nav-module2" class="nav-tab px-3 py-1.5 rounded-md text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors">
+            2. Delivery Simulator
+          </button>
+          <button onclick="switchTab('module3')" id="nav-module3" class="nav-tab px-3 py-1.5 rounded-md text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1.5">
+            <span>3. 2:00 PM Waste AI</span>
+            <span class="px-1.5 py-0.2 text-[10px] font-mono bg-amber-100 text-amber-800 rounded">14:30</span>
+          </button>
+          <button onclick="switchTab('module4')" id="nav-module4" class="nav-tab px-3 py-1.5 rounded-md text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors">
+            4. System Stack
+          </button>
+        </nav>
+      </div>
+
+      <!-- Right: Subtle Persona Switch & Live Actions -->
+      <div class="flex items-center gap-2">
+        <!-- View Switcher -->
+        <div class="hidden sm:flex items-center bg-zinc-100 p-0.5 rounded-md border border-zinc-200/80 text-xs">
+          <button id="persona-ceo" onclick="setPersona('ceo')" class="px-2.5 py-1 rounded bg-white text-zinc-900 shadow-xs font-medium transition-all cursor-pointer">
+            CEO View
+          </button>
+          <button id="persona-manager" onclick="setPersona('manager')" class="px-2.5 py-1 rounded text-zinc-500 hover:text-zinc-900 font-medium transition-all cursor-pointer">
+            Store iPad
+          </button>
+        </div>
+
+        <button onclick="openStockroomModal()" class="px-2.5 py-1.5 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs">
+          <i data-lucide="tablet" class="w-3.5 h-3.5 text-zinc-500"></i>
+          <span class="hidden lg:inline">iPad Log</span>
+        </button>
+
+        <div class="h-4 w-px bg-zinc-200 mx-0.5 hidden sm:block"></div>
+
+        <button onclick="runCeleryAggregation()" class="px-2.5 py-1.5 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-zinc-500" id="celery-spin-icon"></i>
+          <span class="hidden lg:inline">Sync Celery P&L</span>
+        </button>
+
+        <button onclick="triggerWebSocketAlert()" class="px-2.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span>
+          <span>Test Alert</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Tab Bar -->
+    <div class="flex md:hidden border-t border-zinc-100 px-4 py-1.5 gap-1 overflow-x-auto bg-white">
+      <button onclick="switchTab('module1')" class="px-2.5 py-1 rounded text-xs font-medium bg-zinc-100 text-zinc-900 shrink-0">1. P&L</button>
+      <button onclick="switchTab('module2')" class="px-2.5 py-1 rounded text-xs font-medium text-zinc-500 shrink-0">2. Delivery</button>
+      <button onclick="switchTab('module3')" class="px-2.5 py-1 rounded text-xs font-medium text-zinc-500 shrink-0">3. Waste AI</button>
+      <button onclick="switchTab('module4')" class="px-2.5 py-1 rounded text-xs font-medium text-zinc-500 shrink-0">4. Architecture</button>
+    </div>
+  </header>
+
+  <!-- Slim Early-Warning Notification Bar -->
+  <div id="ws-alert-banner" class="bg-rose-50/80 border-b border-rose-200/80 text-rose-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between gap-4 text-xs">
+      <div class="flex items-center gap-2.5 truncate">
+        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-rose-100 text-rose-700 border border-rose-200 shrink-0">
+          WEBSOCKET ALERT
+        </span>
+        <span class="truncate">
+          <strong>Manchester Piccadilly</strong> operating margin dropped to <strong class="font-mono underline">8.4%</strong> (min 10%) &bull;
+          <strong>Camden High St</strong> WTD labor at <strong class="font-mono underline">38.2%</strong> (max 35%).
+        </span>
+      </div>
+      <button onclick="switchTab('module1'); filterStores('breach')" class="text-xs font-medium text-rose-700 hover:text-rose-900 underline shrink-0 cursor-pointer">
+        Filter breaches &rarr;
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1">
+
+    <!-- =================================================================== -->
+    <!-- MODULE 1: EXECUTIVE EARLY WARNING & P&L DASHBOARD                   -->
+    <!-- =================================================================== -->
+    <section id="tab-module1" class="tab-content space-y-6">
+      <!-- Clean Header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 class="text-lg font-semibold text-zinc-900 tracking-tight">Executive P&L & Early Warning</h1>
+          <p class="text-xs text-zinc-500 mt-0.5">
+            Sunday Celery task joining <code class="font-mono text-zinc-700">daily_store_sales</code>, <code class="font-mono text-zinc-700">staff_rota_weekly</code>, <code class="font-mono text-zinc-700">waste_log</code> &amp; pro-rata <code class="font-mono text-zinc-700">store_costs_monthly</code>.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-zinc-500 font-mono">
+          <span>PostgreSQL: 214,892 txns</span>
+          <span>&bull;</span>
+          <span id="sidebar-celery-status" class="text-emerald-600 font-medium">Synced 142ms</span>
+        </div>
+      </div>
+
+      <!-- Minimal 4-Column Metric Strip -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="text-xs text-zinc-500 font-medium">Network WTD Revenue</div>
+          <div class="mt-1.5 flex items-baseline justify-between">
+            <span class="text-xl font-semibold font-mono text-zinc-900">£194,650</span>
+            <span class="text-xs font-mono text-emerald-600">+4.2%</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1">8 UK stores • Week 45</div>
+        </div>
+
+        <div class="bg-white border border-rose-200 rounded-lg p-4 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-rose-600 font-medium">Flagship Margin Alert</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">&lt;10% Rule</span>
+          </div>
+          <div class="mt-1.5 flex items-baseline justify-between">
+            <span class="text-xl font-semibold font-mono text-rose-600" id="kpi-manchester-margin">8.4%</span>
+            <span class="text-xs text-zinc-500">Manchester</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1">Target: 14.5% operating margin</div>
+        </div>
+
+        <div class="bg-white border border-amber-200 rounded-lg p-4 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-amber-700 font-medium">WTD Labor Breaches</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">&gt;35% Rule</span>
+          </div>
+          <div class="mt-1.5 flex items-baseline justify-between">
+            <span class="text-xl font-semibold font-mono text-zinc-900">2 Stores</span>
+            <span class="text-xs font-mono text-amber-600">38.2% max</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1">Camden &amp; Shoreditch over-rostered</div>
+        </div>
+
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-zinc-500 font-medium">Annualized Food Waste</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600" id="kpi-waste-saved-badge">Run-rate</span>
+          </div>
+          <div class="mt-1.5 flex items-baseline justify-between">
+            <span class="text-xl font-semibold font-mono text-zinc-900" id="kpi-annual-waste">£133,420</span>
+            <span class="text-xs font-mono text-rose-600">£2.5k/wk</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1">Solved via 2:00 PM Waste AI</div>
+        </div>
+      </div>
+
+      <!-- Main Grid: Store Table (8 cols) + Chart & Alerts (4 cols) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Store P&L Table -->
+        <div class="lg:col-span-8 bg-white border border-zinc-200/90 rounded-lg shadow-2xs flex flex-col overflow-hidden">
+          <div class="px-4 py-3 border-b border-zinc-200 flex items-center justify-between">
+            <span class="text-xs font-semibold text-zinc-800">Store Performance Breakdown</span>
+            <div class="flex items-center gap-1 bg-zinc-100 p-0.5 rounded-md text-xs">
+              <button onclick="filterStores('all')" id="filter-all" class="px-2 py-0.5 rounded bg-white text-zinc-900 font-medium shadow-2xs">All (8)</button>
+              <button onclick="filterStores('breach')" id="filter-breach" class="px-2 py-0.5 rounded text-zinc-600 hover:text-zinc-900">Breaches (3)</button>
+              <button onclick="filterStores('healthy')" id="filter-healthy" class="px-2 py-0.5 rounded text-zinc-600 hover:text-zinc-900">Healthy (5)</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-zinc-200 text-[11px] font-medium text-zinc-400 bg-zinc-50/60">
+                  <th class="py-2.5 px-4">Store</th>
+                  <th class="py-2.5 px-3 text-right">WTD Sales</th>
+                  <th class="py-2.5 px-3 text-right">Labor %</th>
+                  <th class="py-2.5 px-3 text-right">Waste</th>
+                  <th class="py-2.5 px-3 text-right">Fixed (Pro-Rata)</th>
+                  <th class="py-2.5 px-3 text-right">Op Margin</th>
+                  <th class="py-2.5 px-4 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="store-pl-tbody" class="divide-y divide-zinc-100 text-xs">
+                <!-- Populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Slim Selected Store Footer -->
+          <div class="px-4 py-3 bg-zinc-50 border-t border-zinc-200 mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="text-xs">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-zinc-900" id="drill-store-name">Manchester Piccadilly</span>
+                <span id="drill-store-badge" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">MARGIN &lt; 10%</span>
+              </div>
+              <p class="text-zinc-500 mt-0.5" id="drill-store-diagnosis">
+                High Dashly sub-£8 order volume (£6,420 WTD at -14% net margin) + £490 afternoon panini waste.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="switchTab('module2')" class="px-2.5 py-1 rounded border border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium cursor-pointer">
+                Fix Delivery &rarr;
+              </button>
+              <button onclick="switchTab('module3')" class="px-2.5 py-1 rounded border border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium cursor-pointer">
+                Waste AI &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Chart + Live Stream -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-zinc-800">Labor % vs Operating Margin %</span>
+              <span class="text-[11px] font-mono text-zinc-400">WTD</span>
+            </div>
+            <div class="h-44 relative">
+              <canvas id="plChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="text-xs font-semibold text-zinc-800 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                WebSocket Alert Log
+              </span>
+              <span class="text-[10px] font-mono text-zinc-400">ASGI Push</span>
+            </div>
+            <div id="ws-feed-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 2: THIRD-PARTY DELIVERY SIMULATOR & OPTIMIZER                -->
+    <!-- =================================================================== -->
+    <section id="tab-module2" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 class="text-lg font-semibold text-zinc-900 tracking-tight">Third-Party Delivery Unit Economics Simulator</h1>
+          <p class="text-xs text-zinc-500 mt-0.5">
+            Deducts <span class="font-mono text-zinc-700">33% Dashly commission</span>, <span class="font-mono text-zinc-700">£0.45 packaging</span>, and <span class="font-mono text-zinc-700">£0.96 labor</span> (4 mins @ 1.13x employer on-cost).
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="applyPreset('current')" class="px-2.5 py-1.5 rounded-md border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium cursor-pointer">
+            Current State (£5 MOV)
+          </button>
+          <button onclick="applyPreset('optimal')" class="px-2.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium cursor-pointer">
+            Optimal Fix (£11.50 MOV + 15%)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Sliders Card (4 cols) -->
+        <div class="lg:col-span-4 bg-white border border-zinc-200/90 rounded-lg p-5 shadow-2xs flex flex-col justify-between space-y-5">
+          <div class="space-y-5">
+            <div class="text-xs font-semibold text-zinc-800 border-b border-zinc-100 pb-2.5">Simulation Parameters</div>
+
+            <!-- Slider 1: MOV -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs">
+                <label for="slider-mov" class="font-medium text-zinc-700">Minimum Order Value (MOV)</label>
+                <span id="label-mov" class="font-mono font-semibold text-zinc-900">£6.00</span>
+              </div>
+              <input id="slider-mov" type="range" min="4" max="18" step="0.5" value="6" oninput="updateDeliverySim()" class="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] font-mono text-zinc-400">
+                <span>£4.00</span>
+                <span class="text-rose-500">&lt;£8 Loss</span>
+                <span class="text-emerald-600">£10–£12 Target</span>
+                <span>£18.00</span>
+              </div>
+            </div>
+
+            <!-- Slider 2: Markup -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs">
+                <label for="slider-markup" class="font-medium text-zinc-700">Delivery Menu Markup</label>
+                <span id="label-markup" class="font-mono font-semibold text-zinc-900">+0%</span>
+              </div>
+              <input id="slider-markup" type="range" min="0" max="30" step="1" value="0" oninput="updateDeliverySim()" class="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] font-mono text-zinc-400">
+                <span>0% (In-store)</span>
+                <span>15% Optimal</span>
+                <span>30%</span>
+              </div>
+            </div>
+
+            <!-- Slider 3: COGS -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs">
+                <label for="slider-cogs" class="font-medium text-zinc-700">Ingredient COGS Ratio</label>
+                <span id="label-cogs" class="font-mono font-semibold text-zinc-900">28%</span>
+              </div>
+              <input id="slider-cogs" type="range" min="20" max="40" step="1" value="28" oninput="updateDeliverySim()" class="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg cursor-pointer">
+            </div>
+
+            <!-- Bundle Toggle -->
+            <label class="flex items-start gap-2.5 p-3 rounded-md bg-zinc-50 border border-zinc-200/80 cursor-pointer">
+              <input type="checkbox" id="toggle-bundle" onchange="toggleBundleStrategy()" class="mt-0.5 accent-zinc-900 rounded">
+              <div class="text-xs">
+                <div class="font-medium text-zinc-900">Enforce Bundle-Only Menu</div>
+                <div class="text-zinc-500 text-[11px] mt-0.5">Locks £12.00 min basket (Coffee + Panini + Pastry)</div>
+              </div>
+            </label>
+
+            <!-- Fixed Cost Constants -->
+            <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+              <div class="p-2 rounded bg-zinc-50 border border-zinc-200/60">
+                <div class="text-[10px] text-zinc-400">Dashly Cut</div>
+                <div class="text-xs font-mono font-semibold text-zinc-800">33%</div>
+              </div>
+              <div class="p-2 rounded bg-zinc-50 border border-zinc-200/60">
+                <div class="text-[10px] text-zinc-400">Packaging</div>
+                <div class="text-xs font-mono font-semibold text-zinc-800">£0.45</div>
+              </div>
+              <div class="p-2 rounded bg-zinc-50 border border-zinc-200/60">
+                <div class="text-[10px] text-zinc-400">4m Labor</div>
+                <div class="text-xs font-mono font-semibold text-zinc-800">£0.96</div>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="pushDeliveryPolicyToStores()" class="w-full py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition-colors cursor-pointer">
+            Deploy Policy to Dashly API
+          </button>
+        </div>
+
+        <!-- Waterfall & Chart (8 cols) -->
+        <div class="lg:col-span-8 space-y-4">
+          <!-- Unit Economics Strip -->
+          <div class="bg-white border border-zinc-200/90 rounded-lg p-5 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-zinc-800">Per-Order Receipt Waterfall (at Selected MOV)</span>
+              <span id="sim-verdict-badge" class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                NET LOSS
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200/70">
+                <div class="text-[10px] text-zinc-400">Gross Menu</div>
+                <div class="text-sm font-mono font-semibold text-zinc-900 mt-0.5" id="wf-gross">£6.00</div>
+                <div class="text-[10px] text-zinc-400" id="wf-markup-note">0% markup</div>
+              </div>
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200/70">
+                <div class="text-[10px] text-zinc-400">COGS</div>
+                <div class="text-sm font-mono font-semibold text-zinc-700 mt-0.5" id="wf-cogs">-£1.68</div>
+                <div class="text-[10px] text-zinc-400">Ingredients</div>
+              </div>
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200/70">
+                <div class="text-[10px] text-zinc-400">Dashly 33%</div>
+                <div class="text-sm font-mono font-semibold text-rose-600 mt-0.5" id="wf-dashly">-£1.98</div>
+                <div class="text-[10px] text-zinc-400">Commission</div>
+              </div>
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200/70">
+                <div class="text-[10px] text-zinc-400">Packaging</div>
+                <div class="text-sm font-mono font-semibold text-zinc-700 mt-0.5">-£0.45</div>
+                <div class="text-[10px] text-zinc-400">Fixed/order</div>
+              </div>
+              <div class="p-2.5 rounded-md bg-zinc-50 border border-zinc-200/70">
+                <div class="text-[10px] text-zinc-400">Pick Labor</div>
+                <div class="text-sm font-mono font-semibold text-zinc-700 mt-0.5">-£0.96</div>
+                <div class="text-[10px] text-zinc-400">4m @ 1.13x</div>
+              </div>
+              <div id="wf-net-card" class="p-2.5 rounded-md bg-rose-50 border border-rose-200">
+                <div class="text-[10px] text-zinc-500">Net Profit</div>
+                <div class="text-sm font-mono font-semibold text-rose-600 mt-0.5" id="wf-net">-£0.42</div>
+                <div class="text-[10px] font-mono text-rose-600" id="wf-margin-pct">-7.0%</div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-3 border-t border-zinc-100 text-xs text-zinc-600" id="sim-annual-impact">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Chart -->
+          <div class="bg-white border border-zinc-200/90 rounded-lg p-5 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-zinc-800">Net Profit (£) Across Basket Sizes (£4 to £18)</span>
+              <span class="text-[11px] font-mono text-zinc-400">Gray bars = Blocked by MOV</span>
+            </div>
+            <div class="h-56 relative">
+              <canvas id="deliveryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 3: DYNAMIC END-OF-DAY WASTE PREDICTOR (2:00 PM ENGINE)       -->
+    <!-- =================================================================== -->
+    <section id="tab-module3" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 class="text-lg font-semibold text-zinc-900 tracking-tight">2:00 PM Dynamic End-of-Day Waste Predictor</h1>
+          <p class="text-xs text-zinc-500 mt-0.5">
+            Combines post-lunch sales velocity, Met Office afternoon radar, and daypart footfall to trigger 2:30 PM surplus rescue actions.
+          </p>
+        </div>
+
+        <!-- Clean Segmented Weather Switcher -->
+        <div class="flex items-center bg-zinc-100 p-0.5 rounded-md border border-zinc-200 text-xs self-start">
+          <button onclick="setWeatherScenario('rain')" id="weather-rain" class="px-2.5 py-1 rounded bg-white text-zinc-900 font-medium shadow-2xs cursor-pointer">
+            Rainstorm (-38%)
+          </button>
+          <button onclick="setWeatherScenario('cloudy')" id="weather-cloudy" class="px-2.5 py-1 rounded text-zinc-600 hover:text-zinc-900 cursor-pointer">
+            Overcast (-12%)
+          </button>
+          <button onclick="setWeatherScenario('sunny')" id="weather-sunny" class="px-2.5 py-1 rounded text-zinc-600 hover:text-zinc-900 cursor-pointer">
+            Clear (+5%)
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean 2:30 PM Notification Card -->
+      <div class="bg-white border border-amber-200 rounded-lg p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold bg-amber-100 text-amber-800">2:30 PM PUSH NOTIFICATION</span>
+            <span class="text-zinc-500 font-mono" id="waste-banner-weather">• Heavy Rain 15:00–18:00</span>
+          </div>
+          <h2 class="text-sm font-semibold text-zinc-900" id="waste-headline">
+            40 Unsold Artisan Paninis &amp; 28 Croissants Predicted at 20:00 Close
+          </h2>
+          <p class="text-xs text-zinc-500" id="waste-subheadline">
+            Afternoon rain radar cuts commuter footfall by 38%. Trigger one-click rescue protocols before legal EOD waste logging.
+          </p>
+        </div>
+        <button onclick="executeAllWasteActions()" class="px-3.5 py-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium shrink-0 cursor-pointer">
+          Execute All Rescue Protocols
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 7 Cols: SKU Surplus List -->
+        <div class="lg:col-span-7 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-zinc-800">Predicted Surplus Inventory (Manchester Piccadilly)</span>
+            <span class="text-xs font-mono text-zinc-400" id="rescued-counter-badge">0 / 3 Rescued</span>
+          </div>
+          <div id="waste-sku-list" class="space-y-2.5">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: Chart & Recovery Summary -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-zinc-800">Hourly Footfall &amp; 14:00 Forecast</span>
+              <span class="text-[10px] font-mono text-zinc-400">07:00 – 19:00</span>
+            </div>
+            <div class="h-48 relative">
+              <canvas id="wasteChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+            <div class="text-xs font-semibold text-zinc-800 mb-3">Waste Mitigation Impact</div>
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="p-2.5 rounded bg-zinc-50 border border-zinc-200/60">
+                <div class="text-[10px] text-zinc-400">Unmitigated Loss</div>
+                <div class="text-sm font-mono font-semibold text-rose-600 mt-0.5" id="waste-stat-dead">-£118.20</div>
+              </div>
+              <div class="p-2.5 rounded bg-zinc-50 border border-zinc-200/60">
+                <div class="text-[10px] text-zinc-400">Salvaged Today</div>
+                <div class="text-sm font-mono font-semibold text-emerald-600 mt-0.5" id="waste-stat-recovered">£0.00</div>
+              </div>
+              <div class="p-2.5 rounded bg-zinc-50 border border-zinc-200/60">
+                <div class="text-[10px] text-zinc-400">Network Savings</div>
+                <div class="text-sm font-mono font-semibold text-zinc-900 mt-0.5" id="waste-stat-annual">+£84,100/yr</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- MODULE 4: CORE SYSTEM ARCHITECTURE                                  -->
+    <!-- =================================================================== -->
+    <section id="tab-module4" class="tab-content hidden space-y-6">
+      <div>
+        <h1 class="text-lg font-semibold text-zinc-900 tracking-tight">System Architecture &amp; Technical Specification</h1>
+        <p class="text-xs text-zinc-500 mt-0.5">Product-centric stack engineered for 200,000+ receipt transaction lines and sub-100ms executive responsiveness.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="text-[10px] font-mono uppercase text-zinc-400">1. Backend &amp; API</div>
+          <div class="text-sm font-semibold text-zinc-900 mt-1">Django REST + ASGI</div>
+          <p class="text-xs text-zinc-500 mt-1 leading-relaxed">Business logic, API routing, and WebSockets for real-time margin alerts.</p>
+        </div>
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="text-[10px] font-mono uppercase text-zinc-400">2. Database</div>
+          <div class="text-sm font-semibold text-zinc-900 mt-1">PostgreSQL 16</div>
+          <p class="text-xs text-zinc-500 mt-1 leading-relaxed">Heavy relational joins across 200,000+ receipt lines, rotas, and catchment data.</p>
+        </div>
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="text-[10px] font-mono uppercase text-zinc-400">3. Async Workers</div>
+          <div class="text-sm font-semibold text-zinc-900 mt-1">Redis &amp; Celery</div>
+          <p class="text-xs text-zinc-500 mt-1 leading-relaxed">Sunday night P&amp;L aggregations and 2:00 PM waste prediction offloaded to background workers.</p>
+        </div>
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="text-[10px] font-mono uppercase text-zinc-400">4. Frontend UI</div>
+          <div class="text-sm font-semibold text-zinc-900 mt-1">Flutter &amp; Django UI</div>
+          <p class="text-xs text-zinc-500 mt-1 leading-relaxed">Cross-platform stockroom iPad input for managers and mobile dashboard for the CEO.</p>
+        </div>
+        <div class="bg-white border border-zinc-200/90 rounded-lg p-4 shadow-2xs">
+          <div class="text-[10px] font-mono uppercase text-zinc-400">5. Deployment</div>
+          <div class="text-sm font-semibold text-zinc-900 mt-1">Docker + Railway</div>
+          <p class="text-xs text-zinc-500 mt-1 leading-relaxed">Containerized Gunicorn workers deployed on Railway for low-maintenance hosting.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-white border border-zinc-200/90 rounded-lg overflow-hidden shadow-2xs">
+          <div class="px-4 py-2.5 bg-zinc-50 border-b border-zinc-200 flex justify-between items-center text-xs font-mono text-zinc-600">
+            <span>tasks.py — Sunday Weekly P&amp;L Celery Task</span>
+            <span>Python / Celery</span>
+          </div>
+          <pre class="p-4 text-[11px] font-mono text-zinc-700 overflow-x-auto leading-relaxed"><code>@shared_task
+def compute_weekly_store_pl():
+    # Joins daily_store_sales, staff_rota_weekly, waste_log & store_costs_monthly
+    qs = Store.objects.annotate(
+        rev=Sum('daily_store_sales__revenue'),
+        labor=Sum('staff_rota_weekly__hours') * F('rate') * Decimal('1.13'),
+        waste=Sum('waste_log__cost'),
+        fixed=F('store_costs_monthly__total') * Decimal('12') / Decimal('52')
+    )
+    for s in qs:
+        if (s.labor / s.rev) > 0.35 or (s.is_flagship and s.margin < 0.10):
+            channel_layer.group_send("exec_alerts", {"store": s.name})</code></pre>
+        </div>
+
+        <div class="bg-white border border-zinc-200/90 rounded-lg overflow-hidden shadow-2xs">
+          <div class="px-4 py-2.5 bg-zinc-50 border-b border-zinc-200 flex justify-between items-center text-xs font-mono text-zinc-600">
+            <span>delivery_optimizer.py — Dashly Unit Economics</span>
+            <span>DRF Engine</span>
+          </div>
+          <pre class="p-4 text-[11px] font-mono text-zinc-700 overflow-x-auto leading-relaxed"><code>def calculate_order_margin(basket: float, markup_pct: float, cogs_pct: float):
+    gross = basket * (1 + markup_pct / 100.0)
+    dashly_cut = gross * 0.33       # 33% Commission
+    packaging = 0.45                # £0.45 Fixed packaging
+    labor = 0.96                    # 4 mins @ 1.13x employer on-cost
+    cogs = basket * (cogs_pct / 100.0)
+    net = gross - (dashly_cut + packaging + labor + cogs)
+    return {"gross": gross, "net_profit": net, "margin_pct": (net / gross) * 100}</code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Minimal Stockroom iPad Entry Modal -->
+  <div id="stockroom-modal" class="fixed inset-0 bg-zinc-900/40 backdrop-blur-[1px] z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 rounded-xl max-w-md w-full shadow-xl overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-zinc-100 flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-semibold text-zinc-900">Stockroom iPad — Daily Log</h3>
+          <p class="text-[11px] font-mono text-zinc-400">Flutter Client &rarr; Django REST API</p>
+        </div>
+        <button onclick="closeStockroomModal()" class="text-zinc-400 hover:text-zinc-700 text-xs cursor-pointer">✕</button>
+      </div>
+      <div class="p-5 space-y-3.5 text-xs">
+        <div>
+          <label class="font-medium text-zinc-700 block mb-1">Store Location</label>
+          <select id="modal-store" class="w-full border border-zinc-200 rounded-md px-3 py-1.5 text-xs text-zinc-900 bg-white">
+            <option value="MAN-01">Manchester Piccadilly (Flagship)</option>
+            <option value="LON-02">Camden High Street</option>
+            <option value="LON-03">Shoreditch Boxpark</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-medium text-zinc-700 block mb-1">2:00 PM Panini Stock</label>
+            <input id="modal-panini" type="number" value="62" class="w-full border border-zinc-200 rounded-md px-3 py-1.5 font-mono text-zinc-900">
+          </div>
+          <div>
+            <label class="font-medium text-zinc-700 block mb-1">2:00 PM Pastry Stock</label>
+            <input id="modal-pastry" type="number" value="45" class="w-full border border-zinc-200 rounded-md px-3 py-1.5 font-mono text-zinc-900">
+          </div>
+        </div>
+        <div>
+          <label class="font-medium text-zinc-700 block mb-1">Rota Hours Adjustment</label>
+          <input id="modal-labor" type="number" value="-4" class="w-full border border-zinc-200 rounded-md px-3 py-1.5 font-mono text-emerald-600">
+          <span class="text-[11px] text-zinc-400 mt-0.5 block">Trims 4 idle afternoon hours (-£57.63 @ 1.13x on-cost)</span>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button onclick="closeStockroomModal()" class="px-3 py-1.5 rounded-md border border-zinc-200 text-zinc-600 hover:bg-zinc-50 cursor-pointer">Cancel</button>
+          <button onclick="submitStockroomLog()" class="px-3 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-white font-medium cursor-pointer">Sync to PostgreSQL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimal Toast Container -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 max-w-sm w-full pointer-events-none"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

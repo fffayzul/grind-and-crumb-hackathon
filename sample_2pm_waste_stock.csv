@@ -1,0 +1,4 @@
+store_code,sku_name,category,stock_at_2pm,baseline_afternoon_sales,unit_cogs,retail_price,rescue_channel
+S10,P26 Ham & Cheese Toastie + P28 Chicken Pesto (Hull S10),Lunch • £68.2k/yr chain waste,58,18,2.19,5.60,50% Loyalty App Push
+S03,P16 Butter Croissant & P22 Almond Croissant (Leeds S03),Bakery • £52.4k/yr chain waste,52,16,1.02,3.10,Too Good To Go API
+S07,P29 Falafel Wrap & P31 Superfood Salad (Piccadilly S07),Lunch Grab & Go • £16.1k/yr S07 waste,36,12,2.31,5.75,POS Meal Deal Upsell

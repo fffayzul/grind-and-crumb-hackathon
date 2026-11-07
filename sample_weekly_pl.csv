@@ -1,0 +1,8 @@
+store_code,store_name,is_flagship,gross_revenue,rostered_hours,waste_units,waste_unit_cogs,rent_monthly,utilities_monthly,insurance_ops_monthly,delivery_orders,diagnosis
+S07,Manchester Piccadilly (S07),true,21358.53,383.75,206,1.5032,30500,2027.54,8320.69,319,Highest revenue (£1.11m/yr) but losing -£63.9k/yr (-5.8% true margin): £30.5k/mo rent + sub-£8 single-coffee delivery orders.
+S10,Hull Paragon (S10),false,10393.95,242.49,212,1.4788,5400,1812.74,3976.79,144,Worst waste rate in chain (3.02% / £16.3k/yr — manager over-orders intentionally) + £14k/yr boiler/dishwasher repairs.
+S11,Sheffield Uni Campus (S11),false,6959.86,176.09,105,1.4950,4800,741.48,2401.86,34,Labor > 35% breach (35.5% annual / 52.0% in June): university term-time rota not flexed down out-of-term.
+S06,Manchester Spinningfields (S06),false,13545.07,245.50,156,1.4876,12400,1480.44,4125.73,201,Low 7.1% margin: office district dead on weekends while morning rota is overstaffed and 12–2pm lunch queues walk away.
+S12,Leeds Trinity (S12),false,9590.50,200.48,89,1.4872,8629.17,1330.36,3018.61,133,Opened Sept 2025 (£385k CapEx) only 0.4 miles from Leeds Briggate (S03) — 4.0% margin and cannibalizing £180k/yr from S03.
+S03,Leeds Briggate (S03),true,16922.93,340.84,214,1.4961,11800,2217.66,4003.63,229,Sales dropped ~19% after S12 (Leeds Trinity) opened 0.4 miles away; central par levels never adjusted (£16.6k/yr waste).
+S04,York Stonegate (S04),false,17082.64,340.01,127,1.4973,7900,1357.02,3200.44,228,#1 most profitable store in chain (£183.7k/yr true profit, 20.7% margin, lowest 1.11% waste).

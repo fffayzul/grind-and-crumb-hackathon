@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grind & Crumb — Executive Pitch & Live Demo Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .slide { display: none; animation: fadeIn 0.2s ease-out; }
+    .slide.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-zinc-50 text-zinc-900 font-sans antialiased h-screen flex flex-col justify-between select-none overflow-hidden">
+
+  <!-- Top Bar -->
+  <header class="bg-white border-b border-zinc-200 px-8 h-14 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3">
+      <span class="font-semibold text-sm tracking-tight">Grind & Crumb</span>
+      <span class="text-zinc-300">/</span>
+      <span class="text-xs text-zinc-500">Executive Pitch & Live Demo Guide (S01–S12 Data Pack)</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span id="slide-counter" class="text-xs font-mono text-zinc-400">1 / 7</span>
+      <a href="/" class="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium">
+        Open Live App &rarr;
+      </a>
+    </div>
+  </header>
+
+  <!-- Slide Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-8 flex items-center justify-center overflow-y-auto">
+
+    <!-- SLIDE 1: ANSWERING CEO ANNA WHITFIELD IN THE FIRST MINUTE -->
+    <section class="slide active flex-col justify-center w-full space-y-6 py-6">
+      <div class="space-y-1.5">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">01 • Answering CEO Anna Whitfield in Minute 1 (Report &amp; Pitch + Insight 40%)</span>
+        <h1 class="text-3xl font-bold tracking-tight">"Why Are Sales Up (£8.66m), But Profit Doesn't Move?"</h1>
+        <p class="text-sm text-zinc-500 max-w-3xl">
+          First: your starter P&amp;L overstates profit at <strong>£1,069k</strong> because it forgets to deduct <strong>£133.8k of food waste</strong> and <strong>£19.4k of rota labor</strong>. True chain profit is <strong>£922k</strong> — and 4 root causes are eating your growth:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-rose-600 font-semibold">1. MANCHESTER PICCADILLY (S07) IS LOSING -£63.9K/YR</div>
+          <p class="text-xs text-zinc-600 leading-relaxed">
+            Store manager Ollie thinks S07 is your most profitable store because sales are <strong>£1.11m (#1 in chain)</strong>. In reality, <strong>£30,500/mo rent (£366k/yr)</strong> + <strong>28.9% sub-£8 delivery orders</strong> jamming lunchtime queues caused <strong>32 staff leavers</strong> and a <strong>-5.8% true margin</strong>.
+          </p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-rose-600 font-semibold">2. LEEDS TRINITY (S12) CANNIBALIZED LEEDS BRIGGATE (S03)</div>
+          <p class="text-xs text-zinc-600 leading-relaxed">
+            Opening S12 (<strong>£385k CapEx</strong>, Sept 2025) just <strong>0.4 miles from S03</strong> cut S03 sales by <strong>~19% (-£180k/yr)</strong> and S03 true profit from £16.5k/mo to £7.5k/mo — while manager Grace kept last year's central food par levels, creating <strong>£16,649/yr in waste</strong>.
+          </p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-rose-600 font-semibold">3. HULL PARAGON (S10) WASTE (3.02%) &amp; BROKEN EQUIPMENT</div>
+          <p class="text-xs text-zinc-600 leading-relaxed">
+            Hull has the highest waste rate in the chain (<strong>3.02% / £16,303/yr</strong>) because manager Marcus over-orders on purpose (<em>"I'd rather bin it than disappoint someone"</em>), compounded by <strong>£14k/yr</strong> in repeated boiler/dishwasher breakdown callouts.
+          </p>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-rose-600 font-semibold">4. DASHLY 33% HIKE, APP v3.0 CRASH &amp; OAT MILK CHURN</div>
+          <p class="text-xs text-zinc-600 leading-relaxed">
+            Dashly raised commission from <strong>27% to 33%</strong> in Apr 2026 (£424k/yr fees + £50.2k packaging + £107k pick labor). Meanwhile, <strong>App v3.0 (2 Mar 2026)</strong> erased loyalty stamps (app sales crashed <strong>-33%</strong>), and the <strong>40p oat milk fee</strong> caused <strong>53.3% of oat drinkers</strong> to visit less often.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: DATA RIGOUR (10% WEIGHT) -->
+    <section class="slide flex-col justify-center w-full space-y-6 py-6">
+      <div class="space-y-1.5">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">02 • Data Rigour (10% Weight — Every Data Trap Spotted &amp; Cleaned)</span>
+        <h1 class="text-3xl font-bold tracking-tight">9 Data Traps We Audited &amp; Cleaned</h1>
+        <p class="text-sm text-zinc-500 max-w-3xl">The marking scheme awards 10% for spotting data traps, making fair comparisons, and stating all cost assumptions.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="bg-white p-4 rounded-xl border border-zinc-200 space-y-1.5">
+          <div class="font-mono font-semibold text-zinc-900">1. Omitted Waste in Starter P&amp;L</div>
+          <p class="text-zinc-600"><code class="font-mono">starter_store_monthly_pnl.csv</code> lists <code class="font-mono">waste_cost_gbp</code> (£133,815) as a column, but <strong>never subtracts it</strong> from <code class="font-mono">store_profit_gbp</code> (£1,069,104). Deducting waste + the £19.4k rota boundary gap gives true profit of <strong>~£922k</strong>.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-zinc-200 space-y-1.5">
+          <div class="font-mono font-semibold text-zinc-900">2. S09 Footfall 10x Sensor Glitch</div>
+          <p class="text-zinc-600">On <code class="font-mono">2025-12-06</code>, <code class="font-mono">footfall.csv</code> recorded <strong>10,170 door counts</strong> at <code class="font-mono">S09 Harrogate</code> (4,014 Morning / 3,150 Lunch / 3,006 Afternoon) — a <strong>10x decimal glitch</strong> adding 9,040 phantom visitors vs its normal 1,017.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-zinc-200 space-y-1.5">
+          <div class="font-mono font-semibold text-zinc-900">3. £35.00 Price Typos &amp; Mixed Dates</div>
+          <p class="text-zinc-600">7 rows in <code class="font-mono">transaction_lines.csv</code> on <code class="font-mono">2026-03-14</code> at <code class="font-mono">S04</code> have <code class="font-mono">unit_price_gbp = 35.0</code> instead of <code class="font-mono">3.50</code>; <code class="font-mono">waste_log.csv</code> mixes <code class="font-mono">YYYY-MM-DD</code> and <code class="font-mono">DD/MM/YYYY</code>.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-zinc-200 space-y-1.5">
+          <div class="font-mono font-semibold text-zinc-900">4. Duplicate Rows Across 3 Tables</div>
+          <p class="text-zinc-600">Removed <strong>64 duplicate receipts</strong> in <code class="font-mono">transactions.csv</code>, <strong>106 duplicate lines</strong> in <code class="font-mono">transaction_lines.csv</code>, and <strong>25 duplicate IDs</strong> in <code class="font-mono">loyalty_customers.csv</code>.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-zinc-200 space-y-1.5">
+          <div class="font-mono font-semibold text-zinc-900">5. 570 Refunds (-RF) &amp; 129 Null Units</div>
+          <p class="text-zinc-600">Separated <strong>570 refund receipts (<code class="font-mono">-RF</code>)</strong> with <code class="font-mono">n_lines = 0</code> and 25 negative discounts in <code class="font-mono">transactions.csv</code>; handled <strong>129 null <code class="font-mono">units_wasted</code></strong> in <code class="font-mono">waste_log.csv</code>.</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-zinc-200 space-y-1.5">
+          <div class="font-mono font-semibold text-zinc-900">6. S12 Partial Year &amp; Messy Reviews</div>
+          <p class="text-zinc-600">Normalized <code class="font-mono">S12 Leeds Trinity</code> (288 trading days vs 364 for S01–S11) and cleaned 25+ messy <code class="font-mono">store_name_raw</code> variants (plus 98 whitespace strings) in <code class="font-mono">customer_reviews.csv</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: TAB 1 WALKTHROUGH -->
+    <section class="slide flex-col justify-center w-full space-y-8 py-8">
+      <div class="space-y-2">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">03 • Tool Walkthrough: Tab 1 (25% Tool Criterion)</span>
+        <h1 class="text-3xl font-bold tracking-tight">Tab 1: Store P&amp;L &amp; Early Warning (S01–S12)</h1>
+        <p class="text-base text-zinc-500 max-w-2xl">Replaces the CEO's 6-week-late monthly report with a live weekly P&amp;L across all 12 stores.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-3">
+          <div class="text-xs font-mono text-zinc-400 uppercase">What the Real Data Shows in Tab 1</div>
+          <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-100 text-xs text-rose-800 font-mono space-y-1.5">
+            <div>• <strong>S07 Manchester Piccadilly:</strong> -5.8% True Margin (-£63.9k/yr)</div>
+            <div>• <strong>S10 Hull Paragon:</strong> 6.3% Margin &amp; 3.02% Waste (£16.3k/yr)</div>
+            <div>• <strong>S11 Sheffield Uni Campus:</strong> 35.5% Labor (52.0% in June!)</div>
+            <div>• <strong>S12 Leeds Trinity &amp; S06 Spinningfields:</strong> 4.0% &amp; 7.1% Margin</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-3">
+          <div class="text-xs font-mono text-zinc-400 uppercase">How to Demo Tab 1 Live</div>
+          <ol class="list-decimal list-inside space-y-2 text-sm text-zinc-700">
+            <li>Click <strong>Alerts Only</strong> above the table to isolate the problem stores (<code class="font-mono">S07</code>, <code class="font-mono">S10</code>, <code class="font-mono">S11</code>, <code class="font-mono">S06</code>, <code class="font-mono">S12</code>).</li>
+            <li>Click <strong>+ Add Data</strong> in the top-right header.</li>
+            <li>Select <strong>Sheffield Uni Campus (S11)</strong> and enter <code class="font-mono bg-zinc-100 px-1.5 py-0.5 rounded">-25</code> in <strong>Rota Hours Change</strong> to flex down out-of-term hours.</li>
+            <li>Click <strong>Save</strong> — watch S11's labor drop below <strong>35%</strong> in real time!</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: TAB 4 CEO DECISION SIMULATOR & £1.5M ALLOCATION -->
+    <section class="slide flex-col justify-center w-full space-y-6 py-6">
+      <div class="space-y-1.5">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">04 • Recommendation &amp; Tab 4 Simulator (25% Recommendation Criterion)</span>
+        <h1 class="text-3xl font-bold tracking-tight">Where the £1.5m Goes (Appendix B) &amp; Tab 4 Demo</h1>
+        <p class="text-sm text-zinc-500 max-w-3xl">We recommend <strong>£520k to fix existing leaks (+£176k/yr)</strong>, <strong>£70k for Piccadilly rent renegotiation &amp; profit tool (+£88k/yr)</strong>, <strong>£450k for one new store outside central Leeds (+£91k/yr)</strong>, and <strong>£460k in reserve</strong> — adding <strong>+£355k/yr</strong> (£922k &rarr; <strong>£1,277k/yr</strong>) with a <strong>2.9-year payback</strong> (or <strong>3.9 years</strong> without the rent cut).</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-5 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-zinc-400 uppercase">Appendix B: £1.50m Allocation (+£355k/yr)</div>
+          <ul class="text-xs space-y-1.5 text-zinc-700 font-mono">
+            <li class="flex justify-between"><span>1. Fix App v3.0 &amp; Restore Stamps:</span> <strong>£200k &rarr; +£67k/yr</strong></li>
+            <li class="flex justify-between"><span>2. Manchester Lunch Barista &amp; Shelf:</span> <strong>£120k &rarr; +£27k/yr</strong></li>
+            <li class="flex justify-between"><span>3. Hull S10 Equipment &amp; Halve Waste:</span> <strong>£90k &rarr; +£26k/yr</strong></li>
+            <li class="flex justify-between"><span>4. Drop 40p Oat-Milk Charge:</span> <strong>£100k &rarr; +£23k/yr</strong></li>
+            <li class="flex justify-between"><span>5. £1.50 Sub-£8 Fee + 50% RushEats:</span> <strong>£10k &rarr; +£33k/yr</strong></li>
+            <li class="flex justify-between text-emerald-700 border-t border-zinc-100 pt-1"><span>6 &amp; 7. Piccadilly Rent Cut (33%&rarr;25%) + Tool:</span> <strong>£70k &rarr; +£88k/yr</strong></li>
+            <li class="flex justify-between text-zinc-900"><span>8. 1 New Store (CS5 Liverpool / CS6 Wakefield):</span> <strong>£450k &rarr; +£91k/yr</strong></li>
+            <li class="flex justify-between text-zinc-500 border-t border-zinc-100 pt-1"><span>9. Piccadilly Exit / Relocation Reserve:</span> <strong>£460k Reserve</strong></li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-zinc-200 space-y-2.5">
+          <div class="text-xs font-mono text-zinc-400 uppercase">Live Demo in Tab 4 (4. Decision Simulator)</div>
+          <ol class="list-decimal list-inside space-y-2 text-xs text-zinc-700 leading-relaxed">
+            <li>Open <strong>4. Decision Simulator</strong> — pre-loaded with our Recommended £1.5m Plan: <strong>£1,277,000 Store Profit (+£355k/yr)</strong>, <strong>£1,040,000 Spend (+£460k Reserve)</strong>, and <strong>2.9 yrs payback (3.9 yrs no rent cut)</strong>.</li>
+            <li>Click <strong>Reset to Baseline (£922k)</strong>, then build the plan live or click <strong>Apply Recommended £1.5m Plan (+£355k/yr)</strong>.</li>
+            <li>Untick <strong>Piccadilly Rent Cut (+£88k/yr)</strong> live to show judges how payback shifts from <strong>2.9 yrs to 3.9 yrs</strong> if the landlord refuses!</li>
+            <li>Show why we select <strong>CS5 Liverpool Bold St (or CS6 Wakefield)</strong> (+£91k/yr) and reject <strong>CS7 Leeds Wellington Place</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: TAB 2 WALKTHROUGH -->
+    <section class="slide flex-col justify-center w-full space-y-8 py-8">
+      <div class="space-y-2">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">05 • Module 2 Walkthrough</span>
+        <h1 class="text-3xl font-bold tracking-tight">Tab 2: Delivery Unit Economics Simulator</h1>
+        <p class="text-base text-zinc-500 max-w-2xl">Proves why CEO Anna Whitfield's goal of "30% delivery share" will bankrupt stores unless a Minimum Order Value (£8–£11.50) or £1.50 small-order fee is enforced.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-3">
+          <div class="text-xs font-mono text-zinc-400 uppercase">The Unit Economics Formula (From README.md)</div>
+          <div class="p-4 rounded-xl bg-zinc-50 border border-zinc-200 font-mono text-xs space-y-1.5 text-zinc-800">
+            <div>Gross Menu Price = Basket &times; (1 + Markup %)</div>
+            <div class="text-rose-600">- Food COGS (28% avg across products.csv)</div>
+            <div class="text-rose-600">- Dashly Commission (33% of gross price since Apr 2026)</div>
+            <div class="text-rose-600">- Fixed Packaging (£0.45 per order)</div>
+            <div class="text-rose-600">- Fixed Pick/Pack Labor (£0.96 = 4m @ £12.74 &times; 1.13)</div>
+            <div class="border-t border-zinc-200 pt-1.5 font-bold">= Net Profit / Loss per Order</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-3">
+          <div class="text-xs font-mono text-zinc-400 uppercase">How to Interact With It in the Demo</div>
+          <ol class="list-decimal list-inside space-y-2 text-sm text-zinc-700">
+            <li>Point out Ollie &amp; Jordan's interview quote at <strong>Manchester Piccadilly (S07)</strong>: <em>"Half of delivery orders at lunch are a single Americano (£3.45) — we drop a 12-person queue to bag it up."</em></li>
+            <li>Show the red bars on the chart for <strong>£4–£5 baskets</strong>.</li>
+            <li>Click <strong>Optimal (£11.50 MOV + 15%)</strong> and click <strong>Apply Policy to Stores</strong> to update store margins live!</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: TAB 3 WALKTHROUGH -->
+    <section class="slide flex-col justify-center w-full space-y-8 py-8">
+      <div class="space-y-2">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">06 • Module 3 Walkthrough</span>
+        <h1 class="text-3xl font-bold tracking-tight">Tab 3: 2:00 PM Dynamic Waste Predictor</h1>
+        <p class="text-base text-zinc-500 max-w-2xl">Targets the £133,815/yr waste bill (£68.2k Lunch + £52.4k Bakery + £13.3k Breakfast) led by S03 Leeds Briggate (£16.6k) and S10 Hull Paragon (£16.3k).</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-3">
+          <div class="text-xs font-mono text-zinc-400 uppercase">Real SKUs from products.csv</div>
+          <ul class="text-xs font-mono space-y-2 text-zinc-700 bg-zinc-50 p-4 rounded-xl border border-zinc-200">
+            <li>• <strong>P26 Ham &amp; Cheese Toastie / P28 Chicken Pesto (Hull S10):</strong> £5.60 menu / £2.19 cost</li>
+            <li>• <strong>P16 Butter Croissant / P22 Almond Croissant (Leeds S03):</strong> £3.10 avg / £1.02 cost</li>
+            <li>• <strong>P29 Falafel Wrap / P31 Superfood Salad (Piccadilly S07):</strong> £5.75 menu / £2.31 cost</li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-3">
+          <div class="text-xs font-mono text-zinc-400 uppercase">How to Interact With It in the Demo</div>
+          <ol class="list-decimal list-inside space-y-2 text-sm text-zinc-700">
+            <li>Toggle between <strong>Rain (-38%)</strong>, <strong>Cloudy (-12%)</strong>, and <strong>Sunny (+5%)</strong> to show live surplus recalculation against <code class="font-mono">weather.csv</code> &amp; <code class="font-mono">footfall.csv</code>.</li>
+            <li>Click <strong>Rescue All Surplus</strong> — writes negative waste recovery credits to <code class="font-mono">WasteLog</code> and lowers <strong>Annualized Food Waste (£133,815)</strong> in Tab 1!</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: CSV UPLOAD & SUMMARY -->
+    <section class="slide flex-col justify-center w-full space-y-8 py-8">
+      <div class="space-y-2">
+        <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">07 • Live Data &amp; CSV Ingestion</span>
+        <h1 class="text-3xl font-bold tracking-tight">How Judges Can Test Any CSV Live</h1>
+        <p class="text-base text-zinc-500 max-w-2xl">Supports uploading both our sample CSVs and the raw <code class="font-mono">candidate_sites.csv</code> from the Drive folder.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-zinc-400">METHOD 1</div>
+          <h3 class="text-base font-semibold">Upload CSV Button</h3>
+          <p class="text-sm text-zinc-600">
+            Click <strong>Upload CSV</strong> in the top bar to upload <code class="font-mono text-xs">candidate_sites.csv</code> (CS1–CS7), <code class="font-mono text-xs">sample_weekly_pl.csv</code> (S01–S12), or <code class="font-mono text-xs">sample_2pm_waste_stock.csv</code>.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-zinc-400">METHOD 2</div>
+          <h3 class="text-base font-semibold">+ Add Data Modal</h3>
+          <p class="text-sm text-zinc-600">
+            Simulates a store manager adjusting rota hours (e.g., <code class="font-mono text-xs">S11 Sheffield Uni Campus</code>), sales, or waste units in real time.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-zinc-200 space-y-2">
+          <div class="text-xs font-mono text-zinc-400">METHOD 3</div>
+          <h3 class="text-base font-semibold">1-Click Reset</h3>
+          <p class="text-sm text-zinc-600">
+            Click <strong>Reset</strong> in the top-right corner at any time to restore the exact <code class="font-mono text-xs">S01–S12</code> and <code class="font-mono text-xs">CS1–CS7</code> baseline numbers.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Footer -->
+  <footer class="bg-white border-t border-zinc-200 px-8 h-16 flex items-center justify-between shrink-0">
+    <div class="text-xs text-zinc-400">Use Left / Right arrow keys or buttons to navigate</div>
+    <div class="flex items-center gap-2">
+      <button onclick="changeSlide(-1)" id="btn-prev" class="px-4 py-2 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs font-medium cursor-pointer">
+        &larr; Previous
+      </button>
+      <button onclick="changeSlide(1)" id="btn-next" class="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium cursor-pointer">
+        Next Slide &rarr;
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('slide-counter');
+
+    function showSlide(index) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1} / ${slides.length}`;
+    }
+
+    function changeSlide(dir) {
+      currentSlide = (currentSlide + dir + slides.length) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') changeSlide(1);
+      if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+  </script>
+</body>
+</html>

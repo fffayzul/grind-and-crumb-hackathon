@@ -1,0 +1,45 @@
+/* Minimal, crisp Tailwind UI / Shadcn style adjustments */
+
+.nav-tab.active {
+  background-color: #f4f4f5;
+  color: #18181b;
+  font-weight: 600;
+}
+
+.store-row {
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.store-row:hover {
+  background-color: #fafafa;
+}
+
+.store-row.selected-row {
+  background-color: #f4f4f5;
+}
+
+.tab-content {
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle custom scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}

@@ -1,0 +1,487 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grind & Crumb</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="{% static 'ops_command/styles.css' %}">
+</head>
+<body class="bg-white text-zinc-900 font-sans antialiased min-h-screen">
+
+  <!-- Minimal Header -->
+  <header class="border-b border-zinc-200">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <span class="font-semibold text-base tracking-tight">Grind & Crumb</span>
+        <nav class="flex items-center gap-6 text-sm">
+          <button onclick="switchTab('module1')" id="nav-module1" class="nav-link active py-5 text-zinc-900 font-medium cursor-pointer">
+            1. Store P&L
+          </button>
+          <button onclick="switchTab('module2')" id="nav-module2" class="nav-link py-5 text-zinc-500 hover:text-zinc-900 cursor-pointer">
+            2. Delivery Simulator
+          </button>
+          <button onclick="switchTab('module3')" id="nav-module3" class="nav-link py-5 text-zinc-500 hover:text-zinc-900 cursor-pointer">
+            3. Waste Predictor
+          </button>
+          <button onclick="switchTab('module4')" id="nav-module4" class="nav-link py-5 text-zinc-500 hover:text-zinc-900 cursor-pointer">
+            4. Decision Simulator
+          </button>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="/presentation/" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs font-medium text-zinc-700">
+          Presentation
+        </a>
+        <button onclick="openCsvModal()" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs font-medium cursor-pointer">
+          Upload CSV
+        </button>
+        <button onclick="openStockroomModal()" class="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium cursor-pointer">
+          + Add Data
+        </button>
+        <button onclick="resetDemoDatabase()" class="text-xs text-zinc-400 hover:text-zinc-700 ml-1 cursor-pointer">
+          Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="max-w-5xl mx-auto px-6 py-10">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: STORE P&L                                                    -->
+    <!-- =================================================================== -->
+    <section id="tab-module1" class="tab-content space-y-10">
+
+      <!-- Clean 3-Stat Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="text-xs text-zinc-500">Weekly Network Revenue (£8.66m/yr)</div>
+          <div class="text-2xl font-semibold font-mono mt-1" id="kpi-network-rev">£166,475</div>
+        </div>
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="text-xs text-zinc-500">Manchester Piccadilly S07 Margin (Min 10%)</div>
+          <div class="text-2xl font-semibold font-mono mt-1 text-rose-600" id="kpi-manchester-margin">-5.8%</div>
+        </div>
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="text-xs text-zinc-500">Annualized Food Waste (waste_log.csv)</div>
+          <div class="text-2xl font-semibold font-mono mt-1" id="kpi-annual-waste">£133,815</div>
+        </div>
+      </div>
+
+      <!-- Clean Data Visualizations: Store Margin & Leeds Cannibalization -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-700">Operating Margin % by Store (S01–S12)</span>
+            <span class="text-[11px] font-mono text-zinc-400">Min 10% Flagship</span>
+          </div>
+          <div class="h-56 relative">
+            <canvas id="storeMarginChart"></canvas>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-700">Leeds Cannibalization: S03 Briggate vs S12 Trinity</span>
+            <span class="text-[11px] font-mono text-rose-600">-19% S03 Drop (Sep 2025)</span>
+          </div>
+          <div class="h-56 relative">
+            <canvas id="leedsTrendChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simple Store Table -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-semibold">Weekly Store Performance</h2>
+          <div class="flex gap-2 text-xs">
+            <button onclick="filterStores('all')" id="filter-all" class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-900 font-medium cursor-pointer">All</button>
+            <button onclick="filterStores('breach')" id="filter-breach" class="px-2.5 py-1 rounded-md text-zinc-500 hover:text-zinc-900 cursor-pointer">Alerts Only</button>
+          </div>
+        </div>
+
+        <div class="border border-zinc-200 rounded-xl overflow-hidden">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-zinc-200 text-xs text-zinc-500 bg-zinc-50/50">
+                <th class="py-3 px-4 font-medium">Store</th>
+                <th class="py-3 px-4 font-medium text-right">Weekly Sales</th>
+                <th class="py-3 px-4 font-medium text-right">Labor % <span class="text-zinc-400">(&le;35%)</span></th>
+                <th class="py-3 px-4 font-medium text-right">Waste</th>
+                <th class="py-3 px-4 font-medium text-right">Op Margin <span class="text-zinc-400">(&ge;10%)</span></th>
+                <th class="py-3 px-4 font-medium text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody id="store-pl-tbody" class="divide-y divide-zinc-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: CEO DECISION SIMULATOR                                       -->
+    <!-- =================================================================== -->
+    <section id="tab-module4" class="tab-content hidden space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base font-semibold">CEO £1.5m Capital Allocation &amp; Payback Simulator</h2>
+          <p class="text-xs text-zinc-500 mt-0.5">Models Appendix B: £520k Leak Fixes (+£176k/yr), £70k Piccadilly Rent Cut &amp; Tool (+£88k/yr), £450k New Store (+£91k/yr), &amp; £460k Reserve.</p>
+        </div>
+        <div class="flex items-center gap-3 self-start sm:self-auto">
+          <button onclick="applyRecommendedPlan()" class="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium cursor-pointer">
+            Apply Recommended £1.5m Plan (+£355k/yr)
+          </button>
+          <button onclick="resetCeoDecisionSim()" class="text-xs text-zinc-500 hover:text-zinc-900 underline cursor-pointer">
+            Reset to Baseline (£922k)
+          </button>
+        </div>
+      </div>
+
+      <!-- Top 3 Output Cards: Chain Net Profit (£922k base -> £1,277k plan), Active Capital Spend (£1.04m + £460k reserve), Payback Period (2.9 yrs / 3.9 yrs) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="p-5 rounded-xl border border-zinc-200 bg-zinc-50/40">
+          <div class="text-xs text-zinc-500">Projected Chain Annual Store Profit</div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-2xl font-semibold font-mono text-zinc-900" id="ceo-net-profit">£1,277,000</span>
+            <span class="text-xs font-mono text-emerald-600 font-medium" id="ceo-profit-delta">+£355k/yr</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1" id="ceo-profit-sub">Baseline £922k + £355k annual uplift</div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-zinc-200 bg-zinc-50/40">
+          <div class="text-xs text-zinc-500">£1.50m Budget Allocation (Spend vs Reserve)</div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-2xl font-semibold font-mono text-zinc-900" id="ceo-capex-total">£1,040,000</span>
+            <span class="text-xs font-mono text-zinc-500" id="ceo-capex-note">+ £460k Reserve</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1" id="ceo-capex-sub">£520k Fixes • £70k Rent/Tool • £450k New Store</div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-zinc-200 bg-zinc-50/40">
+          <div class="text-xs text-zinc-500">Payback on Active Spend (With / Without Rent Cut)</div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-2xl font-semibold font-mono text-zinc-900" id="ceo-payback-years">2.9 yrs</span>
+            <span class="text-xs font-mono text-zinc-500" id="ceo-payback-months">(3.9 yrs no rent cut)</span>
+          </div>
+          <div class="text-[11px] text-zinc-400 mt-1" id="ceo-payback-sub">£1.04m spend &divide; +£355k/yr uplift</div>
+        </div>
+      </div>
+
+      <!-- Sliders + Candidate Sites Selection Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <!-- Left: Operational Turnaround Levers (6 cols) -->
+        <div class="md:col-span-6 p-6 rounded-xl border border-zinc-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">1. Fix Existing Leaks (£590k CapEx &rarr; +£264k/yr)</span>
+            <span class="text-[11px] font-mono text-emerald-600" id="ceo-ops-uplift-badge">+£264k/yr</span>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <label for="ceo-hull-slider" class="text-zinc-700 font-medium">3. Hull S10 Turnaround: Halve Waste &amp; Fix Boiler (£90k CapEx)</label>
+              <span id="ceo-hull-label" class="font-mono font-semibold text-zinc-900">-50% (+£26k/yr)</span>
+            </div>
+            <input id="ceo-hull-slider" type="range" min="0" max="80" step="10" value="50" oninput="updateCeoDecisionSim()" class="w-full accent-zinc-900 cursor-pointer">
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <label for="ceo-comm-slider" class="text-zinc-700 font-medium">5a. Shift 50% Dashly (33%) to RushEats (30%)</label>
+              <span id="ceo-comm-label" class="font-mono font-semibold text-zinc-900">31.5% eff.</span>
+            </div>
+            <input id="ceo-comm-slider" type="range" min="28" max="33" step="0.5" value="31.5" oninput="updateCeoDecisionSim()" class="w-full accent-zinc-900 cursor-pointer">
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <label for="ceo-fee-slider" class="text-zinc-700 font-medium">5b. Sub-£8 Delivery Fee (£10k CapEx &rarr; +£33k/yr combined)</label>
+              <span id="ceo-fee-label" class="font-mono font-semibold text-zinc-900">£1.50</span>
+            </div>
+            <input id="ceo-fee-slider" type="range" min="0" max="2.5" step="0.25" value="1.5" oninput="updateCeoDecisionSim()" class="w-full accent-zinc-900 cursor-pointer">
+          </div>
+
+          <div class="pt-2 border-t border-zinc-100 space-y-2 text-xs">
+            <label class="flex items-center justify-between cursor-pointer">
+              <span class="flex items-center gap-2 text-zinc-700">
+                <input id="chk-app-oat-lunch" type="checkbox" checked onchange="updateCeoDecisionSim()" class="accent-zinc-900 rounded cursor-pointer">
+                <span><strong>1, 2 &amp; 4. App Fix (£200k), Manch. Lunch (£120k), Drop Oat Fee (£100k)</strong></span>
+              </span>
+              <span class="font-mono text-emerald-600 font-medium shrink-0">+£117k/yr</span>
+            </label>
+
+            <label class="flex items-center justify-between cursor-pointer">
+              <span class="flex items-center gap-2 text-zinc-700">
+                <input id="chk-piccadilly-rent" type="checkbox" checked onchange="updateCeoDecisionSim()" class="accent-zinc-900 rounded cursor-pointer">
+                <span><strong>6 &amp; 7. Piccadilly Rent Cut (33%&rarr;25%, £30k) + Profit Tool (£40k)</strong></span>
+              </span>
+              <span class="font-mono text-emerald-600 font-medium shrink-0">+£88k/yr</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: Candidate Sites Selector (6 cols) -->
+        <div class="md:col-span-6 p-6 rounded-xl border border-zinc-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400 font-mono">8. Grow Carefully: Select 1 Site (candidate_sites.csv)</span>
+            <a href="/api/sample-csv/?type=candidates" download class="text-xs text-zinc-500 hover:text-zinc-900 underline">&darr; Download CSV</a>
+          </div>
+          <div id="candidate-sites-list" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Clean CEO Profit Bridge Chart -->
+      <div class="p-6 rounded-xl border border-zinc-200">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-xs font-medium text-zinc-700">Annual Store Profit Bridge (£k/yr): Baseline (£922k) + £355k Plan &rarr; £1,277k/yr</span>
+          <span class="text-[11px] font-mono text-zinc-400">Matches Report Appendix B to the pound</span>
+        </div>
+        <div class="h-52 relative">
+          <canvas id="ceoBridgeChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: DELIVERY SIMULATOR                                           -->
+    <!-- =================================================================== -->
+    <section id="tab-module2" class="tab-content hidden space-y-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-semibold">Delivery Margin Simulator</h2>
+          <p class="text-sm text-zinc-500 mt-0.5">Deducts 33% Dashly commission, £0.45 packaging, and £0.96 labor per order.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="applyPreset('current')" class="px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium hover:bg-zinc-50 cursor-pointer">
+            Current (£5 MOV)
+          </button>
+          <button onclick="applyPreset('optimal')" class="px-3 py-1.5 rounded-lg bg-zinc-900 text-white text-xs font-medium hover:bg-zinc-800 cursor-pointer">
+            Optimal (£11.50 MOV + 15%)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <!-- Left Controls (5 cols) -->
+        <div class="md:col-span-5 p-6 rounded-xl border border-zinc-200 space-y-6">
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <label for="slider-mov" class="text-zinc-600">Minimum Order Value</label>
+              <span id="label-mov" class="font-mono font-semibold">£6.00</span>
+            </div>
+            <input id="slider-mov" type="range" min="4" max="18" step="0.5" value="6" oninput="updateDeliverySim()" class="w-full accent-zinc-900 cursor-pointer">
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <label for="slider-markup" class="text-zinc-600">Delivery Menu Markup</label>
+              <span id="label-markup" class="font-mono font-semibold">+0%</span>
+            </div>
+            <input id="slider-markup" type="range" min="0" max="30" step="1" value="0" oninput="updateDeliverySim()" class="w-full accent-zinc-900 cursor-pointer">
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <label for="slider-cogs" class="text-zinc-600">Food COGS %</label>
+              <span id="label-cogs" class="font-mono font-semibold">28%</span>
+            </div>
+            <input id="slider-cogs" type="range" min="20" max="45" step="1" value="28" oninput="updateDeliverySim()" class="w-full accent-zinc-900 cursor-pointer">
+          </div>
+
+          <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+            <div>
+              <div class="text-xs text-zinc-500">Net Profit at Selected MOV</div>
+              <div id="wf-net" class="text-xl font-mono font-semibold mt-0.5">+£0.45</div>
+            </div>
+            <span id="sim-verdict-badge" class="text-xs font-mono px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800">7.5% Margin</span>
+          </div>
+
+          <button onclick="pushDeliveryPolicyToStores()" class="w-full py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium cursor-pointer">
+            Apply Policy to Stores
+          </button>
+        </div>
+
+        <!-- Right Chart (7 cols) -->
+        <div class="md:col-span-7 p-6 rounded-xl border border-zinc-200">
+          <div class="text-sm font-medium mb-4">Net Profit (£) by Order Size (£4 to £18)</div>
+          <div class="h-64 relative">
+            <canvas id="deliveryChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: 2:00 PM WASTE PREDICTOR                                      -->
+    <!-- =================================================================== -->
+    <section id="tab-module3" class="tab-content hidden space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-semibold">2:00 PM End-of-Day Waste Predictor</h2>
+          <p class="text-sm text-zinc-500 mt-0.5" id="waste-banner-weather">Afternoon rainstorm (-38% footfall) • 2:30 PM Manager Push</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="flex bg-zinc-100 p-1 rounded-lg text-xs">
+            <button onclick="setWeatherScenario('rain')" id="weather-rain" class="px-3 py-1 rounded-md bg-white text-zinc-900 font-medium shadow-2xs cursor-pointer">Rain (-38%)</button>
+            <button onclick="setWeatherScenario('cloudy')" id="weather-cloudy" class="px-3 py-1 rounded-md text-zinc-600 cursor-pointer">Cloudy (-12%)</button>
+            <button onclick="setWeatherScenario('sunny')" id="weather-sunny" class="px-3 py-1 rounded-md text-zinc-600 cursor-pointer">Sunny (+5%)</button>
+          </div>
+          <button onclick="executeAllWasteActions()" class="px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium cursor-pointer">
+            Rescue All Surplus
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean Waste Breakdown Visualizations -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-700">2:00 PM Stock vs Predicted Surplus by SKU</span>
+            <span class="text-[11px] font-mono text-zinc-400">Weather-Adjusted</span>
+          </div>
+          <div class="h-48 relative">
+            <canvas id="wasteSurplusChart"></canvas>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl border border-zinc-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-zinc-700">Annual Chain Waste (£133.8k) by Category</span>
+            <span class="text-[11px] font-mono text-zinc-400">waste_log.csv</span>
+          </div>
+          <div class="h-48 relative">
+            <canvas id="wasteCategoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simple Surplus List -->
+      <div id="waste-sku-list" class="space-y-3"></div>
+
+      <!-- Simple Inline Form to Add a 2:00 PM Stock Item -->
+      <form onsubmit="submitNewSurplusSku(event)" class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/50 flex flex-wrap sm:flex-nowrap items-center gap-3">
+        <input id="new-sku-name" type="text" required placeholder="New item (e.g. Smoked Salmon Bagel)" class="flex-1 border border-zinc-200 rounded-lg px-3 py-2 text-xs bg-white">
+        <input id="new-sku-stock" type="number" required placeholder="2PM Stock (e.g. 40)" class="w-36 border border-zinc-200 rounded-lg px-3 py-2 text-xs font-mono bg-white">
+        <input id="new-sku-sales" type="number" required placeholder="Est. Sales (e.g. 12)" class="w-36 border border-zinc-200 rounded-lg px-3 py-2 text-xs font-mono bg-white">
+        <button type="submit" class="px-4 py-2 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-100 text-xs font-medium shrink-0 cursor-pointer">
+          + Add 2PM Item
+        </button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Clean Modal: Add Data -->
+  <div id="stockroom-modal" class="fixed inset-0 bg-black/30 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold">Add Store Data</h3>
+        <button onclick="closeStockroomModal()" class="text-zinc-400 hover:text-zinc-700 text-sm cursor-pointer">✕</button>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="text-xs text-zinc-500 block mb-1">Store</label>
+          <select id="modal-store" class="w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm bg-white">
+            <option value="S11">Sheffield Uni Campus (S11)</option>
+            <option value="S10">Hull Paragon (S10)</option>
+            <option value="S07">Manchester Piccadilly (S07)</option>
+            <option value="S03">Leeds Briggate (S03)</option>
+            <option value="S12">Leeds Trinity (S12)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-zinc-500 block mb-1">Sales Change (£)</label>
+            <input id="modal-sales" type="number" value="0" class="w-full border border-zinc-200 rounded-lg px-3 py-2 font-mono text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-500 block mb-1">Rota Hours Change</label>
+            <input id="modal-labor" type="number" value="-25" class="w-full border border-zinc-200 rounded-lg px-3 py-2 font-mono text-sm">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-zinc-500 block mb-1">Waste Units</label>
+            <input id="modal-waste" type="number" value="0" class="w-full border border-zinc-200 rounded-lg px-3 py-2 font-mono text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-500 block mb-1">2PM Toastie Stock (S10)</label>
+            <input id="modal-panini" type="number" value="" placeholder="Optional (e.g. 58)" class="w-full border border-zinc-200 rounded-lg px-3 py-2 font-mono text-sm">
+          </div>
+        </div>
+      </div>
+      <div class="pt-2 flex justify-end gap-2">
+        <button onclick="closeStockroomModal()" class="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-medium cursor-pointer">Cancel</button>
+        <button onclick="submitStockroomLog()" class="px-4 py-2 rounded-lg bg-zinc-900 text-white text-xs font-medium cursor-pointer">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clean Modal: Upload CSV -->
+  <div id="csv-modal" class="fixed inset-0 bg-black/30 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold">Upload CSV</h3>
+        <button onclick="closeCsvModal()" class="text-zinc-400 hover:text-zinc-700 text-sm cursor-pointer">✕</button>
+      </div>
+
+      <div class="flex flex-wrap gap-2 text-xs">
+        <a href="/api/sample-csv/?type=pl" download class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-zinc-700">
+          &darr; P&amp;L CSV
+        </a>
+        <a href="/api/sample-csv/?type=waste" download class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-zinc-700">
+          &darr; Waste CSV
+        </a>
+        <a href="/api/sample-csv/?type=candidates" download class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-zinc-700">
+          &darr; candidate_sites.csv
+        </a>
+      </div>
+
+      <div>
+        <input id="csv-file-input" type="file" accept=".csv,text/csv" class="w-full border border-zinc-200 rounded-lg p-2 text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-zinc-100 file:text-zinc-800 cursor-pointer">
+      </div>
+
+      <div class="flex items-center justify-between text-xs">
+        <span class="text-zinc-500">Mode</span>
+        <select id="csv-import-mode" class="border border-zinc-200 rounded-lg px-2.5 py-1.5 bg-white">
+          <option value="replace">Overwrite store values</option>
+          <option value="append">Append to existing totals</option>
+        </select>
+      </div>
+
+      <div class="pt-2 flex justify-end gap-2">
+        <button onclick="closeCsvModal()" class="px-4 py-2 rounded-lg border border-zinc-200 text-xs font-medium cursor-pointer">Cancel</button>
+        <button onclick="submitCsvUpload()" id="btn-submit-csv" class="px-4 py-2 rounded-lg bg-zinc-900 text-white text-xs font-medium cursor-pointer">
+          Upload CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 max-w-xs w-full pointer-events-none"></div>
+
+  <script src="{% static 'ops_command/app.js' %}"></script>
+</body>
+</html>
