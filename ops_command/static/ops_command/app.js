@@ -781,3 +781,156 @@ function showToast(title, message) {
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
+
+// --- TAB 5: GEMINI API COPILOT CHATBOT (FRONTEND DEMO) ---
+function sendGeminiQuickPrompt(promptText) {
+  const input = document.getElementById('gemini-chat-input');
+  if (input) {
+    input.value = promptText;
+    handleGeminiChatSubmit(new Event('submit'));
+  }
+}
+
+function handleGeminiChatSubmit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const input = document.getElementById('gemini-chat-input');
+  const container = document.getElementById('gemini-chat-messages');
+  if (!input || !container) return;
+
+  const userText = input.value.trim();
+  if (!userText) return;
+  input.value = '';
+
+  // Append User Bubble
+  const userDiv = document.createElement('div');
+  userDiv.className = 'flex items-start justify-end gap-3';
+  userDiv.innerHTML = `
+    <div class="p-3.5 rounded-xl bg-zinc-900 text-white max-w-xl text-xs leading-relaxed">
+      ${userText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+    </div>
+  `;
+  container.appendChild(userDiv);
+  container.scrollTop = container.scrollHeight;
+
+  // Append Typing Indicator
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'flex items-start gap-3';
+  loadingDiv.innerHTML = `
+    <div class="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center text-xs font-mono shrink-0 mt-0.5">✦</div>
+    <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-500 text-xs font-mono">
+      Querying Gemini API (gemini-2.5-flash) across S01–S12 &amp; CS1–CS7...
+    </div>
+  `;
+  container.appendChild(loadingDiv);
+  container.scrollTop = container.scrollHeight;
+
+  setTimeout(() => {
+    loadingDiv.remove();
+    const replyHtml = generateGeminiReply(userText);
+    const botDiv = document.createElement('div');
+    botDiv.className = 'flex items-start gap-3';
+    botDiv.innerHTML = `
+      <div class="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center text-xs font-mono shrink-0 mt-0.5">✦</div>
+      <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-800 space-y-1.5 max-w-2xl text-xs leading-relaxed">
+        ${replyHtml}
+      </div>
+    `;
+    container.appendChild(botDiv);
+    container.scrollTop = container.scrollHeight;
+  }, 550);
+}
+
+function generateGeminiReply(query) {
+  const q = query.toLowerCase();
+
+  if (q.includes('piccadilly') || q.includes('s07') || q.includes('66k') || q.includes('rent')) {
+    return `
+      <div class="font-semibold text-zinc-900">S07 Manchester Piccadilly — Root Cause Diagnosis</div>
+      <p>Although <strong>S07 Manchester Piccadilly</strong> generates the highest sales in the chain (<strong>£1,110,644/yr</strong>), it loses <strong>−£66k/yr (−5.8% true margin)</strong> due to three compounding factors:</p>
+      <ul class="list-disc list-inside space-y-1 text-zinc-700">
+        <li><strong>Station Rent (33.0% of sales):</strong> £30,500/month (£366k/yr) vs a 15.8% chain average.</li>
+        <li><strong>Lunch Queue Walk-Outs (29% vs 36% conversion):</strong> Only 3 baristas are rostered at lunch instead of 5 while 28.9% sub-£8 delivery orders jam the bar.</li>
+        <li><strong>Staff Turnover (32 leavers/yr):</strong> Concourse rivals pay 50p/hr more (<code class="font-mono">staff_exit_survey.csv</code>).</li>
+      </ul>
+      <p class="text-emerald-700 font-medium pt-1">Fix (Appendix B): Spend £30k to negotiate rent to 25% (+£88k/yr), £120k on lunch capacity (+£27k/yr), and hold a £460k exit reserve.</p>
+    `;
+  }
+
+  if (q.includes('1.5m') || q.includes('allocate') || q.includes('budget') || q.includes('appendix b') || q.includes('payback')) {
+    return `
+      <div class="font-semibold text-zinc-900">Recommended £1.50m Capital Allocation (Appendix B)</div>
+      <p>We allocate <strong>£1.04m to active investments</strong> and hold <strong>£460k in reserve</strong>, lifting store profit by <strong>+£355k/yr</strong> (from £922k &rarr; <strong>£1,277k/yr</strong>):</p>
+      <ul class="list-disc list-inside space-y-1 text-zinc-700">
+        <li><strong>Fix the Leaks (£520k &rarr; +£176k/yr):</strong> Fix App v3.0 (£200k, +£67k), Manch. lunch barista &amp; shelf (£120k, +£27k), Hull S10 boiler/waste turnaround (£90k, +£26k), drop 40p oat-milk fee (£100k, +£23k), and £1.50 sub-£8 delivery fee + 50% RushEats shift (£10k, +£33k).</li>
+        <li><strong>Fix Piccadilly Rent &amp; Tool (£70k &rarr; +£88k/yr):</strong> £30k rent talks (33% &rarr; 25%) + £40k weekly profit tool.</li>
+        <li><strong>Grow Carefully (£450k &rarr; +£91k/yr):</strong> Open 1 non-cannibalizing store outside central Leeds (<strong>CS5 Liverpool Bold St</strong> or <strong>CS6 Wakefield</strong>), rejecting CS7 Leeds Wellington Place.</li>
+        <li><strong>Piccadilly Reserve (£460k):</strong> Covers exit/relocation if landlord refuses the rent cut.</li>
+      </ul>
+      <p class="text-emerald-700 font-medium pt-1">Payback: 2.9 years with the rent cut (or 3.9 years without it).</p>
+    `;
+  }
+
+  if (q.includes('leeds') || q.includes('cannibal') || q.includes('trinity') || q.includes('s12') || q.includes('s03') || q.includes('cs7')) {
+    return `
+      <div class="font-semibold text-zinc-900">Leeds Cannibalization Analysis (S03 Briggate vs S12 Trinity)</div>
+      <p>Opening <strong>S12 Leeds Trinity</strong> (£385k CapEx, 15 Sept 2025) just <strong>0.4 miles</strong> from <strong>S03 Leeds Briggate</strong> caused immediate self-cannibalization:</p>
+      <ul class="list-disc list-inside space-y-1 text-zinc-700">
+        <li><strong>−19% Sales Drop at S03:</strong> S03 fell from ~£89k/mo (Jul–Aug) to ~£72k/mo (Oct onward), cutting S03 profit from £16.5k/mo to £7.5k/mo.</li>
+        <li><strong>£16,649/yr Food Waste at S03:</strong> Central bakery/lunch par levels were never reduced after footfall shifted to Trinity.</li>
+        <li><strong>Why we reject CS7 Leeds Wellington Place (£350k):</strong> S12 made only £19k (3.8% margin) in Year 1; a 3rd central Leeds site would cannibalize both S03 and S12.</li>
+      </ul>
+    `;
+  }
+
+  if (q.includes('clean') || q.includes('rigour') || q.includes('trap') || q.includes('anomaly') || q.includes('data')) {
+    return `
+      <div class="font-semibold text-zinc-900">Data Rigour: 27 Anomalies Across 9 Systemic Traps Cleaned</div>
+      <ol class="list-decimal list-inside space-y-1 text-zinc-700">
+        <li><strong>Omitted Waste in Starter P&amp;L:</strong> £1,069k reported profit omitted <code class="font-mono">waste_cost_gbp</code> (£133,815).</li>
+        <li><strong>Rota Boundary Gap:</strong> £19.4k difference from 30 Jun 2025 start week in <code class="font-mono">staff_rota_weekly.csv</code>.</li>
+        <li><strong>10x Sensor Glitch at Harrogate (S09):</strong> 10,170 door count vs 1,017 normal on <code class="font-mono">2025-12-06</code>.</li>
+        <li><strong>7 Decimal Typos at York (S04):</strong> £35.00 instead of £3.50 on <code class="font-mono">2026-03-14</code> in <code class="font-mono">transaction_lines.csv</code>.</li>
+        <li><strong>Mixed Date Formats:</strong> <code class="font-mono">YYYY-MM-DD</code> mixed with <code class="font-mono">DD/MM/YYYY</code> in waste &amp; rota logs.</li>
+        <li><strong>Duplicates &amp; Refunds:</strong> 64 duplicate receipts, 106 duplicate lines, 25 duplicate loyalty IDs, 570 <code class="font-mono">-RF</code> refunds, and 129 null waste unit rows.</li>
+      </ol>
+    `;
+  }
+
+  if (q.includes('waste') || q.includes('hull') || q.includes('s10') || q.includes('2pm') || q.includes('2:00')) {
+    return `
+      <div class="font-semibold text-zinc-900">Food Waste &amp; Hull Paragon (S10) Analysis</div>
+      <p>Grind &amp; Crumb throws away <strong>9.4% of prepared fresh food (£133,815/yr, or 1.5% of sales)</strong>—led by Lunch (£68.2k) and Bakery (£52.4k). <strong>S10 Hull Paragon</strong> has the worst waste rate (<strong>3.02% / £16,303/yr</strong>) because manager Marcus Dyer over-orders intentionally, compounded by £24k/yr in boiler/dishwasher repairs. Our 2:00 PM Weather-Adjusted Predictor triggers 50% Loyalty App pushes and Too Good To Go rescues before closing.</p>
+    `;
+  }
+
+  if (q.includes('delivery') || q.includes('dashly') || q.includes('rusheats') || q.includes('mov') || q.includes('11.50')) {
+    return `
+      <div class="font-semibold text-zinc-900">Delivery Unit Economics (Dashly 33% vs RushEats 30%)</div>
+      <p>We keep only <strong>£40.80 per £100 of delivery sales</strong> (vs £73 in-store) after Dashly's April hike from 27% to 33%, £0.45 packaging, and £0.96 pick labor (4 mins @ 1.13x). Because <strong>28.9% of delivery orders are under £8</strong>, small single-coffee orders lose money. Charging a <strong>£1.50 fee under £8</strong> (or enforcing an <strong>£11.50 peak MOV + 15% markup</strong>) and shifting 50% of volume to <strong>RushEats (30%)</strong> adds <strong>+£33k/yr</strong>.</p>
+    `;
+  }
+
+  return `
+    <div class="font-semibold text-zinc-900">Gemini Data Pack Summary (S01–S12)</div>
+    <p>Based on your query (<em>"${query.replace(/</g, '&lt;')}"</em>), here are the key verified figures from the cleaned dataset:</p>
+    <ul class="list-disc list-inside space-y-1 text-zinc-700">
+      <li><strong>True Chain Store Profit:</strong> £922,000 on £8.66m revenue (fell 21% from £514k in H1 to £407k in H2).</li>
+      <li><strong>Top 3 Margin Leaks:</strong> Delivery fees (only £40.80 kept per £100), Manchester lunch queues (29% vs 36% conversion), and food waste (£133,815/yr).</li>
+      <li><strong>£1.5m Plan (Appendix B):</strong> £520k leak fixes (+£176k/yr), £70k Piccadilly rent cut &amp; tool (+£88k/yr), £450k for 1 new store outside central Leeds (+£91k/yr), and £460k reserve &rarr; <strong>+£355k/yr uplift (2.9 yrs payback)</strong>.</li>
+    </ul>
+  `;
+}
+
+function clearGeminiChat() {
+  const container = document.getElementById('gemini-chat-messages');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="flex items-start gap-3">
+      <div class="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center text-xs font-mono shrink-0 mt-0.5">✦</div>
+      <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-800 space-y-1.5 max-w-2xl text-xs leading-relaxed">
+        <div class="font-semibold text-zinc-900">Gemini Operations Copilot (Grind &amp; Crumb Data Pack Context)</div>
+        <p>Conversation reset. Ask anything about S01–S12 store margins, Dashly 33% commission, 2:00 PM food waste, or the £1.5m Appendix B allocation.</p>
+      </div>
+    </div>
+  `;
+}

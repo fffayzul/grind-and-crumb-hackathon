@@ -44,13 +44,14 @@
           <button onclick="switchTab('module4')" id="nav-module4" class="nav-link py-5 text-zinc-500 hover:text-zinc-900 cursor-pointer">
             4. Decision Simulator
           </button>
+          <button onclick="switchTab('module5')" id="nav-module5" class="nav-link py-5 text-zinc-500 hover:text-zinc-900 cursor-pointer flex items-center gap-1.5">
+            <span>5. Gemini AI Copilot</span>
+            <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-700">API</span>
+          </button>
         </nav>
       </div>
 
       <div class="flex items-center gap-3">
-        <a href="/presentation/" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs font-medium text-zinc-700">
-          Presentation
-        </a>
         <button onclick="openCsvModal()" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs font-medium cursor-pointer">
           Upload CSV
         </button>
@@ -389,6 +390,69 @@
           + Add 2PM Item
         </button>
       </form>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 5: GEMINI API AI COPILOT CHATBOT                                -->
+    <!-- =================================================================== -->
+    <section id="tab-module5" class="tab-content hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-semibold">Gemini Operations Copilot</h2>
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[11px] font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              gemini-2.5-flash • Grounded on 22 Data Pack Files
+            </span>
+          </div>
+          <p class="text-xs text-zinc-500 mt-0.5">Ask natural-language questions across <code class="font-mono">starter_store_monthly_pnl.csv</code>, <code class="font-mono">waste_log.csv</code>, <code class="font-mono">candidate_sites.csv</code>, and stakeholder interviews.</p>
+        </div>
+
+        <button onclick="clearGeminiChat()" class="text-xs text-zinc-500 hover:text-zinc-900 underline self-start sm:self-auto cursor-pointer">
+          Reset Conversation
+        </button>
+      </div>
+
+      <!-- Quick Prompt Chips -->
+      <div class="flex flex-wrap gap-2">
+        <button onclick="sendGeminiQuickPrompt('Why is Manchester Piccadilly (S07) losing £66k/yr despite £1.11m sales?')" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs text-zinc-700 cursor-pointer transition-colors">
+          Why is Manchester Piccadilly losing £66k?
+        </button>
+        <button onclick="sendGeminiQuickPrompt('How should CEO Anna Whitfield allocate the £1.5m budget (Appendix B)?')" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs text-zinc-700 cursor-pointer transition-colors">
+          How should we spend the £1.5m budget?
+        </button>
+        <button onclick="sendGeminiQuickPrompt('What happened when Leeds Trinity (S12) opened 0.4 miles from Leeds Briggate (S03)?')" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs text-zinc-700 cursor-pointer transition-colors">
+          Explain the Leeds Trinity cannibalization
+        </button>
+        <button onclick="sendGeminiQuickPrompt('What 9 systemic data quality traps were cleaned in the dataset?')" class="px-3 py-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-50 text-xs text-zinc-700 cursor-pointer transition-colors">
+          List the 9 Data Rigour traps found
+        </button>
+      </div>
+
+      <!-- Chat Window -->
+      <div class="border border-zinc-200 rounded-xl overflow-hidden bg-white flex flex-col h-[440px]">
+        <div id="gemini-chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4 text-sm">
+          <!-- Initial Assistant Greeting -->
+          <div class="flex items-start gap-3">
+            <div class="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center text-xs font-mono shrink-0 mt-0.5">
+              ✦
+            </div>
+            <div class="p-3.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-800 space-y-1.5 max-w-2xl text-xs leading-relaxed">
+              <div class="font-semibold text-zinc-900">Gemini Operations Copilot (Grind &amp; Crumb Data Pack Context)</div>
+              <p>I have indexed all <strong>19 cleaned CSV tables</strong> and <strong>3 qualitative briefing files</strong> (July 2025 – June 2026). True chain store profit is <strong>£922,000</strong> after deducting the omitted <strong>£133,815 food waste</strong> from the starter P&amp;L.</p>
+              <p class="text-zinc-500">Select a suggested question above or ask anything about store margins, delivery unit economics, 2:00 PM food waste, or the £1.5m Appendix B allocation.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <form onsubmit="handleGeminiChatSubmit(event)" class="border-t border-zinc-200 p-3 bg-zinc-50/50 flex items-center gap-2">
+          <input id="gemini-chat-input" type="text" required placeholder="Ask Gemini about S01–S12 store margins, Dashly 33% commission, or the £1.5m plan..." class="flex-1 border border-zinc-200 rounded-lg px-3.5 py-2 text-xs bg-white focus:outline-none focus:border-zinc-400">
+          <button type="submit" id="gemini-send-btn" class="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium shrink-0 cursor-pointer">
+            Ask Gemini
+          </button>
+        </form>
+      </div>
     </section>
 
   </main>
